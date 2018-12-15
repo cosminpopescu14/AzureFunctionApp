@@ -7,7 +7,7 @@ namespace Company.Function.DigestFetcher
     public class DigestFetcher
     {
         private const string BASE_URL = "https://csharpdigest.net/digests";
-        public List<Digest> GetDigestLinks(string digestNumber = "236")
+        public List<Digest> GetDigestLinks(string digestNumber)
         {
             List<string> htmlElements = new List<string>
             {

@@ -19,18 +19,17 @@ namespace Company.Function
         [FunctionName("HttpTriggerCSharp")]
         public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req, ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            log.LogInformation("C# HTTP trigger function processed a request.{}", req.HttpContext);
 
-            string name = req.Query["name"];
+            string digestId = req.Query["digestId"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            digestId = digestId ?? data?.digestId;
             DigestFetcher.DigestFetcher digestFetcher = new DigestFetcher.DigestFetcher();
-            digestFetcher.GetDigestLinks();
-            return name != null
-                ? (ActionResult)new OkObjectResult(/*$"Hello, {name}"*/digestFetcher.GetDigestLinks(name))
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            return digestId != null
+                ? (ActionResult)new OkObjectResult(digestFetcher.GetDigestLinks(digestId))
+                : new BadRequestObjectResult("Please pass a digest id on the query string or in the request body");
         }     
     }
 }
